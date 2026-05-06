@@ -12,3 +12,5 @@ Luego, en la parte de diseño presentaré los diagramas. Incluyendo el de E/R po
 Luego, en la implementación es cuando crearé la aplicación. Mi meta es para que pueda servirlo usando un VM con autenticación. Hacer un dash es TBD. Existen muchos recursos para visualizar los datos tal vez usar un recurso de software libre.
 
 Finalmente, la verificación será la evaluación.
+
+Enlace de base de datos en Kaggle: https://www.kaggle.com/datasets/mterzolo/lego-sets
