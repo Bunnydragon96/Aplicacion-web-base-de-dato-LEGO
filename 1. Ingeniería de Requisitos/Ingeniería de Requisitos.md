@@ -31,3 +31,4 @@ La captura de requisitos es basada en los requisitos proveídos por el profesor 
 | 2     | La aplicación web debe contar con un dominio propio que permita ser accedida a traves del internet.            |
 | 3     | La aplicación web debe ser accesible desde los principales navegadores web.                                    |
 | 4     | La aplicación web debe ser intuitiva, si no, que provea instrucciones.                                         |
+|       |                                                                                                                |

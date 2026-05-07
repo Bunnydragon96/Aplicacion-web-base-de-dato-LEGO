@@ -1,5 +1,6 @@
 ## Definición del problema
-El cliente (profesor) quiere que practiquemos como implementar una base de datos a una aplicación web usando técnicas aprendidas en clase. 
+El cliente (profesor) quiere que practiquemos como implementar una base de datos a una aplicación web usando técnicas aprendidas en clase. En la base de datos de lego_sets.csv es 
+> Temas, subtemas y piezas en una sola sábana.
 
 ## Antecedentes
 MongoDB¹ es una plataforma de visualización e interacción con bases de datos no estructurados. Sin embargo, desde 20250, tiene un *dashboard*, puede crear analíticas de los datos y cumple con ACID², entre otros *features*. Apoya queries, indexación, replicación, load balancing, almacenamiento de archivos, agregación, capped collections y transacciones. A pesar de estos features, la comunidad ha encontrado riesgos de seguridad en la aplicación.   
@@ -40,4 +41,4 @@ Esta aplicación tendrá una página de registro y será servida usando una **m�
 
 ## Limitaciones
 
-Se usarán recursos de software libres.
+Se usarán nada más recursos de software libres.
