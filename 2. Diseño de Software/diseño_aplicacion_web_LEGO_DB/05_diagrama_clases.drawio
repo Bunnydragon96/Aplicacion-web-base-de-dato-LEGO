@@ -1,0 +1,131 @@
+<mxfile host="app.diagrams.net" modified="2026-05-07T00:00:00.000Z" agent="Claude" version="24.7.17" type="device">
+  <diagram id="diagram-1" name="Diagrama de Clases - LegoDB">
+    <mxGraphModel dx="1422" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c2" value="Diagrama de Clases — LegoDB" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="20" width="600" height="40" as="geometry"/></mxCell>
+        <mxCell id="c3" value="«abstract,UserMixin»
+User" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#dae8fc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="60" y="380" width="250" height="214" as="geometry"/></mxCell>
+        <mxCell id="c4" value="- id: int
+- nombre_usuario: str
+- hash_contrasena: str
+- email: str
+- fecha_creacion: datetime" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c3"><mxGeometry y="50" width="250" height="90" as="geometry"/></mxCell>
+        <mxCell id="c5" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c3"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="140" as="sourcePoint"/><mxPoint x="250" y="140" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c6" value="+ get_id() : str
++ check_password(pw) : bool
++ is_authenticated() : bool
+{abstract} + tipo() : str" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c3"><mxGeometry y="140" width="250" height="74" as="geometry"/></mxCell>
+        <mxCell id="c7" value="RegisteredUser" style="swimlane;fontSize=12;fontStyle=1;startSize=36;html=1;horizontal=1;rounded=0;fillColor=#dae8fc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="60" y="610" width="250" height="108" as="geometry"/></mxCell>
+        <mxCell id="c8" value="- preferencias_visualizacion: dict" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c7"><mxGeometry y="36" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c9" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c7"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="66" as="sourcePoint"/><mxPoint x="250" y="66" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c10" value="+ tipo() : str
++ get_preferences() : dict" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c7"><mxGeometry y="66" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c11" value="Administrator" style="swimlane;fontSize=12;fontStyle=1;startSize=36;html=1;horizontal=1;rounded=0;fillColor=#dae8fc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="260" y="610" width="250" height="136" as="geometry"/></mxCell>
+        <mxCell id="c12" value="- nivel_acceso: int
+- fecha_designacion: date" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c11"><mxGeometry y="36" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c13" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c11"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="78" as="sourcePoint"/><mxPoint x="250" y="78" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c14" value="+ tipo() : str
++ insert_set(data) : bool
++ update_set(id, data) : bool" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c11"><mxGeometry y="78" width="250" height="58" as="geometry"/></mxCell>
+        <mxCell id="c15" value="«Entity»
+LegoSet" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#fff2cc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="480" y="380" width="250" height="230" as="geometry"/></mxCell>
+        <mxCell id="c16" value="- prod_id: int
+- set_name: str
+- list_price: float
+- piece_count: int
+- prod_desc: str
+- prod_long_desc: str
+- id_subtema: int
+- id_rango_edad: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c15"><mxGeometry y="50" width="250" height="138" as="geometry"/></mxCell>
+        <mxCell id="c17" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c15"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="188" as="sourcePoint"/><mxPoint x="250" y="188" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c18" value="+ to_dict() : dict
++ resumen() : str" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c15"><mxGeometry y="188" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c19" value="«Entity»
+Theme" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#fff2cc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="700" y="380" width="250" height="122" as="geometry"/></mxCell>
+        <mxCell id="c20" value="- id_tema: int
+- nombre_tema: str" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c19"><mxGeometry y="50" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c21" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c19"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="92" as="sourcePoint"/><mxPoint x="250" y="92" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c22" value="+ get_subthemes() : list[Subtheme]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c19"><mxGeometry y="92" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c23" value="«Entity»
+Subtheme" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#fff2cc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="700" y="610" width="250" height="138" as="geometry"/></mxCell>
+        <mxCell id="c24" value="- id_subtema: int
+- nombre_subtema: str
+- id_tema: int" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c23"><mxGeometry y="50" width="250" height="58" as="geometry"/></mxCell>
+        <mxCell id="c25" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c23"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="108" as="sourcePoint"/><mxPoint x="250" y="108" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c26" value="+ get_theme() : Theme" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c23"><mxGeometry y="108" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c27" value="«Entity»
+Review" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#fff2cc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="920" y="380" width="250" height="218" as="geometry"/></mxCell>
+        <mxCell id="c28" value="- id_resena: int
+- prod_id: int
+- id_pais: int
+- num_reviews: int
+- star_rating: float
+- val_star_rating: float
+- play_star_rating: float
+- review_difficulty: str" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c27"><mxGeometry y="50" width="250" height="138" as="geometry"/></mxCell>
+        <mxCell id="c29" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c27"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="188" as="sourcePoint"/><mxPoint x="250" y="188" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c30" value="+ promedio_estrellas() : float" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c27"><mxGeometry y="188" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c31" value="«Entity»
+Minifigure" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#fff2cc;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="920" y="610" width="250" height="138" as="geometry"/></mxCell>
+        <mxCell id="c32" value="- id_minifig: int
+- nombre_minifig: str
+- descripcion: str" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c31"><mxGeometry y="50" width="250" height="58" as="geometry"/></mxCell>
+        <mxCell id="c33" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c31"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="108" as="sourcePoint"/><mxPoint x="250" y="108" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c34" value="—" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c31"><mxGeometry y="108" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c35" value="«Controller»
+AuthController" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#e1d5e7;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="60" y="100" width="250" height="138" as="geometry"/></mxCell>
+        <mxCell id="c36" value="- login_manager: LoginManager" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c35"><mxGeometry y="50" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c37" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c35"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="80" as="sourcePoint"/><mxPoint x="250" y="80" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c38" value="+ signup() : Response   [RF-01]
++ login() : Response    [RF-02]
++ logout() : Response" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c35"><mxGeometry y="80" width="250" height="58" as="geometry"/></mxCell>
+        <mxCell id="c39" value="«Controller»
+QueryController" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#e1d5e7;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="320" y="100" width="250" height="170" as="geometry"/></mxCell>
+        <mxCell id="c40" value="—" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c39"><mxGeometry y="50" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c41" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c39"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="80" as="sourcePoint"/><mxPoint x="250" y="80" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c42" value="+ list_tables() : Response          [RF-04]
++ select_attr(table, col) : Response [RF-05]
++ join_three() : Response            [RF-06]
++ aggregate() : Response             [RF-07]
++ subquery() : Response              [RF-03]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c39"><mxGeometry y="80" width="250" height="90" as="geometry"/></mxCell>
+        <mxCell id="c43" value="«Controller»
+CrudController" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#e1d5e7;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="660" y="100" width="250" height="122" as="geometry"/></mxCell>
+        <mxCell id="c44" value="—" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c43"><mxGeometry y="50" width="250" height="30" as="geometry"/></mxCell>
+        <mxCell id="c45" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c43"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="80" as="sourcePoint"/><mxPoint x="250" y="80" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c46" value="+ insert(table) : Response  [RF-08]
++ modify(table, id) : Response [RF-09]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c43"><mxGeometry y="80" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c47" value="«Model»
+DBModel" style="swimlane;fontSize=12;fontStyle=1;startSize=50;html=1;horizontal=1;rounded=0;fillColor=#d5e8d4;strokeColor=#23445D;" vertex="1" parent="1"><mxGeometry x="920" y="100" width="250" height="166" as="geometry"/></mxCell>
+        <mxCell id="c48" value="- conn: MySQLConnection
+- cursor: MySQLCursor" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c47"><mxGeometry y="50" width="250" height="42" as="geometry"/></mxCell>
+        <mxCell id="c49" style="endArrow=none;html=1;strokeColor=#23445D;" edge="1" parent="c47"><mxGeometry relative="1" as="geometry"><mxPoint x="0" y="92" as="sourcePoint"/><mxPoint x="250" y="92" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="c50" value="+ connect(cfg) : MySQLConnection
++ run_query(sql, params) : list[dict]
++ run_dml(sql, params) : int
++ close()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=6;spacingTop=4;" vertex="1" parent="c47"><mxGeometry y="92" width="250" height="74" as="geometry"/></mxCell>
+        <mxCell id="c51" value="" style="endArrow=block;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="c7" target="c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c52" value="" style="endArrow=block;endFill=0;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="c11" target="c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c53" value="* → 1" style="endArrow=open;html=1;" edge="1" parent="1" source="c15" target="c23"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c54" value="* → 1" style="endArrow=open;html=1;" edge="1" parent="1" source="c23" target="c19"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c55" value="* → 1" style="endArrow=open;html=1;" edge="1" parent="1" source="c27" target="c15"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c56" value="* ↔ *" style="endArrow=diamondThin;startFill=0;endFill=0;html=1;" edge="1" parent="1" source="c15" target="c31"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c57" value="modifica
+*" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c11" target="c15"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c58" value="usa" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c35" target="c47"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c59" value="usa" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c39" target="c47"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c60" value="usa" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c43" target="c47"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c61" value="instancia" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c35" target="c3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c62" value="instancia" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c39" target="c15"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c63" value="instancia" style="endArrow=open;html=1;dashed=1;" edge="1" parent="1" source="c43" target="c15"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c64" value="Notación UML 2.5
+──▷  Herencia (extends)
+──▶  Asociación
+─ ─▶ Dependencia («uses»)
+──◇  Agregación
+[RF-XX] = requisito funcional cubierto" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=11;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;" vertex="1" parent="1"><mxGeometry x="480" y="800" width="380" height="110" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
