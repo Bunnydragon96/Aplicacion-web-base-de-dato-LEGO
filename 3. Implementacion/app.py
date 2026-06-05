@@ -27,25 +27,49 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "cambia-esto-en-producci
 csrf = CSRFProtect(app)   # protección CSRF global para todos los formularios POST
 
 
-# ── Jinja2 filter: limpia símbolos de marca y arregla mojibake común ────────
+# ── Jinja2 filter: limpia símbolos de marca y corrige encoding ──────────────
 _STRIP_SYMBOLS = str.maketrans("", "", "™®©")
-_MOJIBAKE = [
-    ("Â½",  "½"),   # ½ mal decodificado como Latin-1
-    ("â„¢", ""),    # ™ mal decodificado
-    ("Â®",  ""),    # ® mal decodificado
-    ("Â©",  ""),    # © mal decodificado
-]
+
+# Tabla de normalización: comillas tipográficas y guiones largos → ASCII
+_NORMALIZE = str.maketrans({
+    "‘": "'",   # ' comilla simple izquierda
+    "’": "'",   # ' comilla simple derecha / apóstrofe tipográfico
+    "“": '"',   # " comilla doble izquierda
+    "”": '"',   # " comilla doble derecha
+    "–": "-",   # – guion medio
+    "—": "-",   # — guion largo
+    "…": "...", # … puntos suspensivos
+})
 
 
 def clean_text(value):
-    """Elimina ™ ® © y corrige mojibake frecuente; pasa valores no-string sin cambio."""
+    """
+    Limpia una cadena de texto para presentación en la interfaz:
+      1. Intenta reparar mojibake UTF-8-como-Latin-1 (causa de España → EspaÃ±a,
+         ½ → Â½, etc.) usando el truco encode/decode estándar.
+      2. Elimina los símbolos ™ ® ©.
+      3. Normaliza comillas tipográficas y guiones largos a ASCII.
+    Valores no-string se devuelven sin cambio; None → '—'.
+    """
     if value is None:
         return "—"
     if not isinstance(value, str):
         return value
-    for bad, good in _MOJIBAKE:
-        value = value.replace(bad, good)
-    return value.translate(_STRIP_SYMBOLS).strip()
+
+    # Reparar mojibake: bytes UTF-8 mal interpretados como Latin-1
+    # Ejemplo: 'EspaÃ±a' → encode latin-1 → b'\xc3\xb1' → decode utf-8 → 'ñ'
+    try:
+        value = value.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass  # la cadena ya es Unicode correcto o tiene otro origen
+
+    # Eliminar símbolos de marca registrada / derechos de autor
+    value = value.translate(_STRIP_SYMBOLS)
+
+    # Normalizar tipografía
+    value = value.translate(_NORMALIZE)
+
+    return value.strip()
 
 
 app.jinja_env.filters["clean"] = clean_text

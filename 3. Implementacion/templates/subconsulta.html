@@ -14,7 +14,7 @@
     <label>País
       <select name="country" onchange="this.form.submit()">
         {% for c in countries %}
-        <option value="{{ c.country_code }}" {{ 'selected' if c.country_code==sel_country }}>{{ c.country_name }}</option>
+        <option value="{{ c.country_code }}" {{ 'selected' if c.country_code==sel_country }}>{{ c.country_name | clean }}</option>
         {% endfor %}
       </select>
     </label>

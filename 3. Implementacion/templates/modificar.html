@@ -53,13 +53,13 @@
     </label>
     <label>Rango de edad
       <select name="age_id">
-        {% for a in ages %}<option value="{{ a.age_id }}" {{ 'selected' if a.age_id==current.age_id }}>{{ a.ages }}</option>{% endfor %}
+        {% for a in ages %}<option value="{{ a.age_id }}" {{ 'selected' if a.age_id==current.age_id }}>{{ a.ages | clean }}</option>{% endfor %}
       </select>
     </label>
     <label>Dificultad
       <select name="difficulty_id">
         <option value="">— sin especificar —</option>
-        {% for d in diffs %}<option value="{{ d.difficulty_id }}" {{ 'selected' if d.difficulty_id==current.difficulty_id }}>{{ d.review_difficulty }}</option>{% endfor %}
+        {% for d in diffs %}<option value="{{ d.difficulty_id }}" {{ 'selected' if d.difficulty_id==current.difficulty_id }}>{{ d.review_difficulty | clean }}</option>{% endfor %}
       </select>
     </label>
     <button type="submit">Guardar cambios</button>
