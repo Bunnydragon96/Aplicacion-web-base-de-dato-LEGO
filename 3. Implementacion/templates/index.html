@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Bienvenido a LegoDB</h1>
+  <p>Interfaz de consulta sobre la base de datos normalizada de sets de LEGO
+     (744 sets · 21 países · 40 temas).</p>
+  <div class="grid">
+    <a class="tile" href="{{ url_for('tablas') }}"><b>Tablas</b><span>RF-04 · ver todas las relaciones</span></a>
+    <a class="tile" href="{{ url_for('atributo') }}"><b>Atributo</b><span>RF-05 · proyectar una columna</span></a>
+    <a class="tile" href="{{ url_for('join') }}"><b>JOIN</b><span>RF-06 · unir 3+ tablas</span></a>
+    <a class="tile" href="{{ url_for('agregacion') }}"><b>Agregación</b><span>RF-07 · GROUP BY / HAVING</span></a>
+    <a class="tile" href="{{ url_for('subconsulta') }}"><b>Subconsulta</b><span>RF-03 · WITH / CTE</span></a>
+    <a class="tile" href="{{ url_for('insertar') }}"><b>Insertar</b><span>RF-08 · nuevo set</span></a>
+    <a class="tile" href="{{ url_for('modificar') }}"><b>Modificar</b><span>RF-09 · editar set</span></a>
+  </div>
+</div>
+{% endblock %}

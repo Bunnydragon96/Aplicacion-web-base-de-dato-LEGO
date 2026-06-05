@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_table %}
+{% block title %}Tablas{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>RF-04 · Todas las tablas</h1>
+  <p class="muted">Consulta sobre <code>sqlite_master</code>.</p>
+  {{ render_table(['name'], tablas) }}
+</div>
+{% endblock %}

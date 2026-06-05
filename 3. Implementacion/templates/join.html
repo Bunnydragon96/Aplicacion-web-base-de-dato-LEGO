@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_table %}
+{% block title %}JOIN{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>RF-06 · JOIN de 3+ tablas</h1>
+  <p class="muted">Une <code>lego_set</code> ⋈ <code>theme</code> ⋈ <code>age_range</code> ⋈ <code>difficulty</code>.</p>
+  <form method="get" class="row">
+    <label>Filtrar por tema
+      <select name="theme_id" onchange="this.form.submit()">
+        <option value="">— todos —</option>
+        {% for t in themes %}
+        <option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==sel_theme }}>{{ t.theme_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </form>
+  {{ render_table(cols, rows) }}
+</div>
+{% endblock %}

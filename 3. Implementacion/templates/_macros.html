@@ -1,0 +1,16 @@
+{# Macro reutilizable para renderizar resultados en tabla (capa Vista) #}
+{% macro render_table(cols, rows) %}
+  {% if rows is not none %}
+    <p class="count">{{ rows|length }} fila(s)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>{% for c in cols %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for r in rows %}
+            <tr>{% for c in cols %}<td>{{ r[c] if r[c] is not none else '—' }}</td>{% endfor %}</tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endmacro %}

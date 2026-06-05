@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_table %}
+{% block title %}Agregación{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>RF-07 · Agregación (GROUP BY / HAVING)</h1>
+  <p class="muted">Precio promedio por tema en el país elegido, solo temas con suficientes sets.</p>
+  <form method="get" class="row">
+    <label>País
+      <select name="country">
+        {% for c in countries %}
+        <option value="{{ c.country_code }}" {{ 'selected' if c.country_code==sel_country }}>{{ c.country_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>HAVING ≥ <input type="number" name="min_sets" value="{{ min_sets }}" min="1" style="width:5em"></label>
+    <button type="submit">Calcular</button>
+  </form>
+  {{ render_table(cols, rows) }}
+</div>
+{% endblock %}

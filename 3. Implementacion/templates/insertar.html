@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Insertar{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>RF-08 · Insertar un set</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Nombre del set <input name="set_name" required></label>
+    <label>Cantidad de piezas <input name="piece_count" type="number" min="0"></label>
+    <label>Tema
+      <select name="theme_id" required>
+        {% for t in themes %}<option value="{{ t.theme_id }}">{{ t.theme_name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Rango de edad
+      <select name="age_id" required>
+        {% for a in ages %}<option value="{{ a.age_id }}">{{ a.ages }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Dificultad (opcional)
+      <select name="difficulty_id">
+        <option value="">— sin especificar —</option>
+        {% for d in diffs %}<option value="{{ d.difficulty_id }}">{{ d.review_difficulty }}</option>{% endfor %}
+      </select>
+    </label>
+    <button type="submit">Insertar</button>
+  </form>
+</div>
+{% endblock %}

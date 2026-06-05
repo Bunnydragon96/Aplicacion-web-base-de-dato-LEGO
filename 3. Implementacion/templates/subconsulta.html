@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_table %}
+{% block title %}Subconsulta{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>RF-03 · Subconsulta (WITH / CTE)</h1>
+  <p class="muted">Sets cuyo precio supera el promedio del país (la CTE calcula el promedio).</p>
+  <form method="get" class="row">
+    <label>País
+      <select name="country" onchange="this.form.submit()">
+        {% for c in countries %}
+        <option value="{{ c.country_code }}" {{ 'selected' if c.country_code==sel_country }}>{{ c.country_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </form>
+  {{ render_table(cols, rows) }}
+</div>
+{% endblock %}

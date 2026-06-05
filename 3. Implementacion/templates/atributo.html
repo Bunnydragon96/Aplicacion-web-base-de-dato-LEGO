@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_table %}
+{% block title %}Atributo{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>RF-05 · Escoger un atributo de una relación</h1>
+  <form method="get" class="row">
+    <label>Tabla
+      <select name="table" onchange="this.form.submit()">
+        <option value="">— elegir —</option>
+        {% for t in projectable %}
+        <option value="{{ t }}" {{ 'selected' if t==sel_table }}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    {% if sel_table %}
+    <label>Columna
+      <select name="column">
+        <option value="">— elegir —</option>
+        {% for c in projectable[sel_table] %}
+        <option value="{{ c }}" {{ 'selected' if c==sel_col }}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Proyectar</button>
+    {% endif %}
+  </form>
+  {% if error %}<div class="flash error">{{ error }}</div>{% endif %}
+  {{ render_table(cols, rows) }}
+</div>
+{% endblock %}
