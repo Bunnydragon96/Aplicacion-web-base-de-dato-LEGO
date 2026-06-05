@@ -3,8 +3,14 @@
 {% block title %}Tablas{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-04 · Todas las tablas</h1>
-  <p class="muted">Consulta sobre <code>sqlite_master</code>.</p>
+  <h1>Tablas de la base de datos</h1>
+  <p class="info">
+    Esta página lista todas las tablas que forman la base de datos LegoDB.
+    Cada fila corresponde a una tabla — por ejemplo, <strong>lego_set</strong> almacena
+    los sets, <strong>theme</strong> los temas, y <strong>price_listing</strong> los
+    precios por país. Usa las demás secciones del menú para consultar el contenido
+    de estas tablas en detalle.
+  </p>
   {{ render_table(['name'], tablas) }}
 </div>
 {% endblock %}

@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% from "_macros.html" import render_table %}
-{% block title %}Agregación{% endblock %}
+{% block title %}Precios por tema{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-07 · Agregación (GROUP BY / HAVING)</h1>
-  <p class="muted">Precio promedio por tema en el país elegido, solo temas con suficientes sets.</p>
+  <h1>Precio promedio por tema</h1>
+  <p class="info">
+    Muestra el precio promedio, mínimo y máximo de los sets agrupados por tema para
+    el país seleccionado. El campo <strong>Mín. sets</strong> filtra los temas que
+    tienen pocos productos — auméntalo para ver solo los temas con mayor presencia en
+    ese mercado, o bájalo para incluir temas pequeños. Selecciona un país y presiona
+    <em>Calcular</em> para actualizar los resultados.
+  </p>
   <form method="get" class="row">
     <label>País
       <select name="country">
@@ -13,7 +19,9 @@
         {% endfor %}
       </select>
     </label>
-    <label>HAVING ≥ <input type="number" name="min_sets" value="{{ min_sets }}" min="1" style="width:5em"></label>
+    <label>Mínimo de sets en el tema
+      <input type="number" name="min_sets" value="{{ min_sets }}" min="1" style="width:5em">
+    </label>
     <button type="submit">Calcular</button>
   </form>
   {{ render_table(cols, rows) }}

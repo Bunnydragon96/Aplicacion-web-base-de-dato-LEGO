@@ -3,16 +3,37 @@
 {% block content %}
 <div class="card">
   <h1>Bienvenido a LegoDB</h1>
-  <p>Interfaz de consulta sobre la base de datos normalizada de sets de LEGO
-     (744 sets · 21 países · 40 temas).</p>
+  <p>Base de datos normalizada de sets de LEGO — 744 sets · 21 países · 40 temas.
+     Usa el menú de navegación o los accesos directos de abajo para explorar y gestionar los datos.</p>
   <div class="grid">
-    <a class="tile" href="{{ url_for('tablas') }}"><b>Tablas</b><span>RF-04 · ver todas las relaciones</span></a>
-    <a class="tile" href="{{ url_for('atributo') }}"><b>Atributo</b><span>RF-05 · proyectar una columna</span></a>
-    <a class="tile" href="{{ url_for('join') }}"><b>JOIN</b><span>RF-06 · unir 3+ tablas</span></a>
-    <a class="tile" href="{{ url_for('agregacion') }}"><b>Agregación</b><span>RF-07 · GROUP BY / HAVING</span></a>
-    <a class="tile" href="{{ url_for('subconsulta') }}"><b>Subconsulta</b><span>RF-03 · WITH / CTE</span></a>
-    <a class="tile" href="{{ url_for('insertar') }}"><b>Insertar</b><span>RF-08 · nuevo set</span></a>
-    <a class="tile" href="{{ url_for('modificar') }}"><b>Modificar</b><span>RF-09 · editar set</span></a>
+    <a class="tile" href="{{ url_for('tablas') }}">
+      <b>Tablas</b>
+      <span>Ver todas las tablas que componen la base de datos</span>
+    </a>
+    <a class="tile" href="{{ url_for('atributo') }}">
+      <b>Atributo</b>
+      <span>Explorar los valores únicos de una columna</span>
+    </a>
+    <a class="tile" href="{{ url_for('join') }}">
+      <b>Búsqueda de sets</b>
+      <span>Ver sets con tema, edad y dificultad combinados</span>
+    </a>
+    <a class="tile" href="{{ url_for('agregacion') }}">
+      <b>Precios por tema</b>
+      <span>Precio promedio por tema según el país</span>
+    </a>
+    <a class="tile" href="{{ url_for('subconsulta') }}">
+      <b>Sets sobre el promedio</b>
+      <span>Sets cuyo precio supera el promedio del país</span>
+    </a>
+    <a class="tile" href="{{ url_for('insertar') }}">
+      <b>Insertar set</b>
+      <span>Agregar un nuevo set a la base de datos</span>
+    </a>
+    <a class="tile" href="{{ url_for('modificar') }}">
+      <b>Modificar set</b>
+      <span>Buscar y editar un set existente</span>
+    </a>
   </div>
 </div>
 {% endblock %}

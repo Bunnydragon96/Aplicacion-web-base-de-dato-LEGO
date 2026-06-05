@@ -7,7 +7,7 @@
         <thead><tr>{% for c in cols %}<th>{{ c }}</th>{% endfor %}</tr></thead>
         <tbody>
           {% for r in rows %}
-            <tr>{% for c in cols %}<td>{{ r[c] if r[c] is not none else '—' }}</td>{% endfor %}</tr>
+            <tr>{% for c in cols %}<td>{{ r[c] | clean }}</td>{% endfor %}</tr>
           {% endfor %}
         </tbody>
       </table>

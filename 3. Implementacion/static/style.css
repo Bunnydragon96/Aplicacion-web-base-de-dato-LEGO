@@ -49,3 +49,5 @@ tbody tr:hover{background:#f7f9fc}
 .flash.error{background:#fdecef;color:var(--err);border:1px solid #f5c2cb}
 hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
 a{color:var(--accent2)}
+.info{background:#eef4ff;border:1px solid #c3d9ff;border-radius:8px;
+  padding:.65rem 1rem;font-size:.88rem;color:#1e3a6e;margin:.8rem 0 1rem;line-height:1.55}

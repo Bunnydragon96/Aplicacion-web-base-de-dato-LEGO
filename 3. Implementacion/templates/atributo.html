@@ -3,11 +3,17 @@
 {% block title %}Atributo{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-05 · Escoger un atributo de una relación</h1>
+  <h1>Explorar columna</h1>
+  <p class="info">
+    Selecciona una <strong>tabla</strong> y luego una <strong>columna</strong> para ver
+    todos los valores distintos que contiene esa columna. Es útil para conocer qué temas,
+    rangos de edad o niveles de dificultad existen en la base de datos antes de filtrar
+    o insertar datos.
+  </p>
   <form method="get" class="row">
     <label>Tabla
       <select name="table" onchange="this.form.submit()">
-        <option value="">— elegir —</option>
+        <option value="">— elegir tabla —</option>
         {% for t in projectable %}
         <option value="{{ t }}" {{ 'selected' if t==sel_table }}>{{ t }}</option>
         {% endfor %}
@@ -16,13 +22,13 @@
     {% if sel_table %}
     <label>Columna
       <select name="column">
-        <option value="">— elegir —</option>
+        <option value="">— elegir columna —</option>
         {% for c in projectable[sel_table] %}
         <option value="{{ c }}" {{ 'selected' if c==sel_col }}>{{ c }}</option>
         {% endfor %}
       </select>
     </label>
-    <button type="submit">Proyectar</button>
+    <button type="submit">Ver valores</button>
     {% endif %}
   </form>
   {% if error %}<div class="flash error">{{ error }}</div>{% endif %}

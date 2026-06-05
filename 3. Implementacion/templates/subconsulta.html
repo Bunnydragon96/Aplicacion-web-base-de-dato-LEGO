@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% from "_macros.html" import render_table %}
-{% block title %}Subconsulta{% endblock %}
+{% block title %}Sets sobre el promedio{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-03 · Subconsulta (WITH / CTE)</h1>
-  <p class="muted">Sets cuyo precio supera el promedio del país (la CTE calcula el promedio).</p>
+  <h1>Sets sobre el precio promedio</h1>
+  <p class="info">
+    Lista los sets cuyo precio de lista supera el precio promedio del país seleccionado,
+    ordenados de mayor a menor precio. Cambia el país en el menú desplegable para
+    comparar qué sets son considerados caros en diferentes mercados. Los resultados
+    se actualizan automáticamente al cambiar la selección.
+  </p>
   <form method="get" class="row">
     <label>País
       <select name="country" onchange="this.form.submit()">

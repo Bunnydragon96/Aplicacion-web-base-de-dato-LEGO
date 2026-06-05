@@ -11,6 +11,7 @@ Arranque:
     -> http://127.0.0.1:5000
 """
 import os
+import re
 
 from flask import (Flask, render_template, request, redirect, url_for, flash)
 from flask_login import (LoginManager, UserMixin, login_user, logout_user,
@@ -24,6 +25,30 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "cambia-esto-en-produccion")
 
 csrf = CSRFProtect(app)   # protección CSRF global para todos los formularios POST
+
+
+# ── Jinja2 filter: limpia símbolos de marca y arregla mojibake común ────────
+_STRIP_SYMBOLS = str.maketrans("", "", "™®©")
+_MOJIBAKE = [
+    ("Â½",  "½"),   # ½ mal decodificado como Latin-1
+    ("â„¢", ""),    # ™ mal decodificado
+    ("Â®",  ""),    # ® mal decodificado
+    ("Â©",  ""),    # © mal decodificado
+]
+
+
+def clean_text(value):
+    """Elimina ™ ® © y corrige mojibake frecuente; pasa valores no-string sin cambio."""
+    if value is None:
+        return "—"
+    if not isinstance(value, str):
+        return value
+    for bad, good in _MOJIBAKE:
+        value = value.replace(bad, good)
+    return value.translate(_STRIP_SYMBOLS).strip()
+
+
+app.jinja_env.filters["clean"] = clean_text
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"

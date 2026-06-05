@@ -1,15 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Insertar{% endblock %}
+{% block title %}Insertar set{% endblock %}
 {% block content %}
 <div class="card narrow">
-  <h1>RF-08 · Insertar un set</h1>
+  <h1>Agregar un set nuevo</h1>
+  <p class="info">
+    Completa el formulario para registrar un nuevo set de LEGO en la base de datos.
+    El <strong>nombre</strong>, <strong>tema</strong> y <strong>rango de edad</strong>
+    son obligatorios. La cantidad de piezas y la dificultad son opcionales — puedes
+    dejarlos en blanco o sin especificar si no dispones del dato. Una vez insertado,
+    serás redirigido a la página de edición para completar o corregir la información.
+  </p>
   <form method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>Nombre del set <input name="set_name" required></label>
     <label>Cantidad de piezas <input name="piece_count" type="number" min="0"></label>
     <label>Tema
       <select name="theme_id" required>
-        {% for t in themes %}<option value="{{ t.theme_id }}">{{ t.theme_name }}</option>{% endfor %}
+        {% for t in themes %}<option value="{{ t.theme_id }}">{{ t.theme_name | clean }}</option>{% endfor %}
       </select>
     </label>
     <label>Rango de edad

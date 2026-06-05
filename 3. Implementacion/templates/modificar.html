@@ -1,43 +1,57 @@
 {% extends "base.html" %}
-{% block title %}Modificar{% endblock %}
+{% block title %}Modificar set{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-09 · Modificar un set</h1>
+  <h1>Modificar un set</h1>
+  <p class="info">
+    Escribe parte del nombre del set que quieres editar y presiona <strong>Buscar</strong>.
+    En los resultados, haz clic en <em>Editar</em> junto al set deseado para cargar
+    su formulario de edición. Actualiza los campos que necesites y presiona
+    <strong>Guardar cambios</strong> para aplicar las modificaciones.
+  </p>
 
   <form method="get" class="row">
-    <label>Buscar set por nombre <input name="q" value="{{ term }}" placeholder="p.ej. Falcon"></label>
+    <label>Buscar set por nombre
+      <input name="q" value="{{ term }}" placeholder="p.ej. Falcon">
+    </label>
     <button type="submit">Buscar</button>
   </form>
 
   {% if results is not none %}
+    {% if results %}
     <table>
-      <thead><tr><th>prod_id</th><th>Nombre</th><th>Piezas</th><th></th></tr></thead>
+      <thead><tr><th>ID</th><th>Nombre</th><th>Piezas</th><th></th></tr></thead>
       <tbody>
         {% for r in results %}
         <tr>
-          <td>{{ r.prod_id }}</td><td>{{ r.set_name }}</td><td>{{ r.piece_count }}</td>
+          <td>{{ r.prod_id }}</td>
+          <td>{{ r.set_name | clean }}</td>
+          <td>{{ r.piece_count if r.piece_count is not none else '—' }}</td>
           <td><a href="{{ url_for('modificar', prod_id=r.prod_id) }}">Editar</a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <p class="muted">No se encontraron sets con ese nombre.</p>
+    {% endif %}
   {% endif %}
 
   {% if current %}
   <hr>
-  <h2>Editando prod_id {{ current.prod_id }}</h2>
+  <h2>Editando: {{ current.set_name | clean }}</h2>
   <form method="post" class="narrow">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="prod_id" value="{{ current.prod_id }}">
     <input type="hidden" name="accion" value="guardar">
-    <label>Nombre <input name="set_name" value="{{ current.set_name }}" required></label>
+    <label>Nombre <input name="set_name" value="{{ current.set_name | clean }}" required></label>
     <label>Piezas <input name="piece_count" type="number" value="{{ current.piece_count }}"></label>
     <label>Tema
       <select name="theme_id">
-        {% for t in themes %}<option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==current.theme_id }}>{{ t.theme_name }}</option>{% endfor %}
+        {% for t in themes %}<option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==current.theme_id }}>{{ t.theme_name | clean }}</option>{% endfor %}
       </select>
     </label>
-    <label>Edad
+    <label>Rango de edad
       <select name="age_id">
         {% for a in ages %}<option value="{{ a.age_id }}" {{ 'selected' if a.age_id==current.age_id }}>{{ a.ages }}</option>{% endfor %}
       </select>

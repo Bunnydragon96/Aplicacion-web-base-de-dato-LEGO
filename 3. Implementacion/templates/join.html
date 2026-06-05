@@ -1,16 +1,21 @@
 {% extends "base.html" %}
 {% from "_macros.html" import render_table %}
-{% block title %}JOIN{% endblock %}
+{% block title %}Búsqueda de sets{% endblock %}
 {% block content %}
 <div class="card">
-  <h1>RF-06 · JOIN de 3+ tablas</h1>
-  <p class="muted">Une <code>lego_set</code> ⋈ <code>theme</code> ⋈ <code>age_range</code> ⋈ <code>difficulty</code>.</p>
+  <h1>Búsqueda de sets</h1>
+  <p class="info">
+    Muestra los sets de LEGO junto con su tema, rango de edad recomendado y nivel de
+    dificultad de armado, todo en una sola vista. Los resultados están ordenados de mayor
+    a menor cantidad de piezas. Usa el menú desplegable para filtrar por un tema
+    específico, o déjalo en <em>todos</em> para ver el catálogo completo.
+  </p>
   <form method="get" class="row">
     <label>Filtrar por tema
       <select name="theme_id" onchange="this.form.submit()">
-        <option value="">— todos —</option>
+        <option value="">— todos los temas —</option>
         {% for t in themes %}
-        <option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==sel_theme }}>{{ t.theme_name }}</option>
+        <option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==sel_theme }}>{{ t.theme_name | clean }}</option>
         {% endfor %}
       </select>
     </label>
