@@ -96,10 +96,10 @@ CREATE TABLE IF NOT EXISTS app_user (
     UNIQUE KEY uq_username (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE INDEX IF NOT EXISTS idx_set_theme      ON lego_set(theme_id);
-CREATE INDEX IF NOT EXISTS idx_set_age        ON lego_set(age_id);
-CREATE INDEX IF NOT EXISTS idx_set_difficulty ON lego_set(difficulty_id);
-CREATE INDEX IF NOT EXISTS idx_price_country  ON price_listing(country_code);
+CREATE INDEX idx_set_theme      ON lego_set(theme_id);
+CREATE INDEX idx_set_age        ON lego_set(age_id);
+CREATE INDEX idx_set_difficulty ON lego_set(difficulty_id);
+CREATE INDEX idx_price_country  ON price_listing(country_code);
 
 -- age_range: 31 rows
 INSERT INTO `age_range` (`age_id`, `ages`, `min_age`, `max_age`) VALUES (1, '10+', 10, NULL);

@@ -1,0 +1,71 @@
+# ============================================================
+# LegoDB — docker-compose.yml
+#
+# Servicios:
+#   db   → MySQL 8.0  (datos persistidos en volumen 'mysql_data')
+#   web  → Flask + Gunicorn  (construido desde Dockerfile)
+#
+# Uso rápido:
+#   docker compose up --build          # primera vez
+#   docker compose up -d               # levantar en segundo plano
+#   docker compose down -v             # detener y borrar volúmenes
+#
+# La base de datos se inicializa automáticamente con lego_dump.sql
+# la primera vez que el volumen 'mysql_data' esté vacío.
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # Servicio: base de datos MySQL
+  # ----------------------------------------------------------
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword          # sólo para administración interna
+      MYSQL_DATABASE:      legodb
+      MYSQL_USER:          legodb
+      MYSQL_PASSWORD:      legopassword
+    volumes:
+      # Datos persistentes entre reinicios del contenedor
+      - mysql_data:/var/lib/mysql
+      # Script de inicialización: carga esquema + datos al crear el volumen
+      - ./lego_dump.sql:/docker-entrypoint-initdb.d/lego_dump.sql:ro
+    healthcheck:
+      # mysqladmin ping verifica que el servidor acepta conexiones
+      test: ["CMD-SHELL",
+             "mysqladmin ping -h 127.0.0.1 -u legodb -plegopassword --silent"]
+      interval:     10s   # tiempo entre pruebas
+      timeout:       5s   # tiempo máximo por prueba
+      retries:      10    # intentos antes de marcar el servicio como unhealthy
+      start_period: 60s   # tiempo de gracia inicial (carga del dump puede tardar)
+
+  # ----------------------------------------------------------
+  # Servicio: aplicación web Flask + Gunicorn
+  # ----------------------------------------------------------
+  web:
+    build:
+      context: .          # directorio con el Dockerfile (3. Implementacion/)
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"       # http://localhost:8000
+    environment:
+      # Conexión a MySQL (mismos valores que el servicio 'db')
+      MYSQL_HOST:     db            # nombre del servicio Docker = hostname DNS interno
+      MYSQL_PORT:     3306
+      MYSQL_USER:     legodb
+      MYSQL_PASSWORD: legopassword
+      MYSQL_DB:       legodb
+      # Clave secreta de Flask (sesiones + CSRF). Cambiar en producción real.
+      SECRET_KEY:     reemplaza-esto-con-un-valor-seguro-en-produccion
+    depends_on:
+      db:
+        condition: service_healthy  # espera hasta que MySQL pase el healthcheck
+
+# ----------------------------------------------------------
+# Volúmenes con nombre (gestionados por Docker)
+# ----------------------------------------------------------
+volumes:
+  mysql_data:

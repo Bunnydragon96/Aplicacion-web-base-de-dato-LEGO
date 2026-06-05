@@ -10,6 +10,8 @@ Arranque:
     python app.py        # levanta el servidor de desarrollo
     -> http://127.0.0.1:5000
 """
+import os
+
 from flask import (Flask, render_template, request, redirect, url_for, flash)
 from flask_login import (LoginManager, UserMixin, login_user, logout_user,
                          login_required, current_user)
@@ -19,7 +21,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import db
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "cambia-esto-en-produccion"  # para sesiones/CSRF flash
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "cambia-esto-en-produccion")
 
 csrf = CSRFProtect(app)   # protección CSRF global para todos los formularios POST
 

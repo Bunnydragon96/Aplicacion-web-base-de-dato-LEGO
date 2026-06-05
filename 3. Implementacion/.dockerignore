@@ -1,0 +1,31 @@
+# ============================================================
+# .dockerignore — archivos excluidos del contexto de build
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Base de datos SQLite (reemplazada por MySQL en Docker)
+*.db
+*.sqlite3
+
+# Datos CSV — la BD se inicializa con lego_dump.sql, no con etl.py
+lego_sets.csv
+
+# Archivos de IDE / sistema
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Variables de entorno locales (nunca en la imagen)
+.env
+.env.*
