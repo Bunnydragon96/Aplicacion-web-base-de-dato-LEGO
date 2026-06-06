@@ -63,3 +63,16 @@ _Documentación y control de versiones_
 - **Diagramas UML de casos de uso** para los nueve requisitos funcionales.
 - **Diagrama de arquitectura MVC** mostrando las tres capas (Modelo, Vista/Plantilla, Controlador/Ruta Flask), sus responsabilidades y el flujo de una petición HTTP desde el navegador hasta MySQL y de vuelta.
 - **Diagramas de flujo** para los procesos críticos de autenticación (RF-01, RF-02) y de inserción y modificación de datos (RF-08, RF-09).
+
+## Nota: entidades del diagrama E/R fuera del alcance de esta versión
+
+El diagrama E/R (`01_diagrama_ER.png`) incluye cuatro entidades que **no se implementaron** en el esquema final de la base de datos. Esta diferencia es intencional y se justifica a continuación:
+
+| Entidad en el E/R | Razón para excluirla de la implementación |
+|---|---|
+| **Minifigura** | El dataset `lego_sets.csv` no contiene datos de minifiguras. Incluirla requeriría una fuente de datos externa fuera del alcance del proyecto. |
+| **Dimension** | Las dimensiones físicas del set (alto, ancho, profundo) no están presentes en el CSV de origen. Se modelaron en el E/R como requisito potencial futuro. |
+| **Subtema** | El CSV registra solo un nivel de tema por set. Un subtema jerárquico requeriría datos adicionales no disponibles en esta versión. |
+| **Sesion** | La sesión de usuario se gestiona a nivel de aplicación mediante Flask-Login (cookie de sesión), no como entidad almacenada en la base de datos, lo que es la práctica estándar para este tipo de sistema. |
+
+El diagrama E/R refleja el modelo conceptual completo (incluyendo posibles extensiones futuras), mientras que el esquema relacional implementado representa el subconjunto realizable con los datos disponibles en este semestre. Las 9 entidades implementadas cubren completamente los datos del CSV y cumplen todos los requisitos funcionales de la rúbrica.
