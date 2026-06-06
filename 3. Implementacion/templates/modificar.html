@@ -39,29 +39,66 @@
 
   {% if current %}
   <hr>
+  {# fd = datos enviados si el servidor rechazó el formulario; si no, usar los de la DB #}
+  {% set fd = form_data %}
   <h2>Editando: {{ current.set_name | clean }}</h2>
-  <form method="post" class="narrow">
+  <form method="post" class="narrow" novalidate>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" name="prod_id" value="{{ current.prod_id }}">
     <input type="hidden" name="accion" value="guardar">
-    <label>Nombre <input name="set_name" value="{{ current.set_name | clean }}" required></label>
-    <label>Piezas <input name="piece_count" type="number" value="{{ current.piece_count }}"></label>
-    <label>Tema
-      <select name="theme_id">
-        {% for t in themes %}<option value="{{ t.theme_id }}" {{ 'selected' if t.theme_id==current.theme_id }}>{{ t.theme_name | clean }}</option>{% endfor %}
-      </select>
+
+    <label>Nombre *
+      <input name="set_name" maxlength="300" required
+             value="{{ (fd.set_name | clean) if fd else (current.set_name | clean) }}">
+      <small class="muted">Obligatorio · máximo 300 caracteres</small>
     </label>
-    <label>Rango de edad
-      <select name="age_id">
-        {% for a in ages %}<option value="{{ a.age_id }}" {{ 'selected' if a.age_id==current.age_id }}>{{ a.ages | clean }}</option>{% endfor %}
-      </select>
+
+    <label>Piezas
+      <input name="piece_count" type="number" min="1"
+             value="{{ fd.piece_count if fd and fd.piece_count else (current.piece_count if current.piece_count is not none else '') }}">
+      <small class="muted">Opcional · número entero ≥ 1</small>
     </label>
+
+    <label>Tema *
+      <select name="theme_id" required>
+        {% for t in themes %}
+          {% set sel_id = fd.theme_id if fd else current.theme_id|string %}
+          <option value="{{ t.theme_id }}"
+            {{ 'selected' if t.theme_id|string == sel_id }}>
+            {{ t.theme_name | clean }}
+          </option>
+        {% endfor %}
+      </select>
+      <small class="muted">Obligatorio</small>
+    </label>
+
+    <label>Rango de edad *
+      <select name="age_id" required>
+        {% for a in ages %}
+          {% set sel_id = fd.age_id if fd else current.age_id|string %}
+          <option value="{{ a.age_id }}"
+            {{ 'selected' if a.age_id|string == sel_id }}>
+            {{ a.ages | clean }}
+          </option>
+        {% endfor %}
+      </select>
+      <small class="muted">Obligatorio</small>
+    </label>
+
     <label>Dificultad
       <select name="difficulty_id">
-        <option value="">— sin especificar —</option>
-        {% for d in diffs %}<option value="{{ d.difficulty_id }}" {{ 'selected' if d.difficulty_id==current.difficulty_id }}>{{ d.review_difficulty | clean }}</option>{% endfor %}
+        {% set sel_diff = fd.difficulty_id if fd else (current.difficulty_id|string if current.difficulty_id is not none else '') %}
+        <option value="" {{ 'selected' if not sel_diff }}>— sin especificar —</option>
+        {% for d in diffs %}
+          <option value="{{ d.difficulty_id }}"
+            {{ 'selected' if d.difficulty_id|string == sel_diff }}>
+            {{ d.review_difficulty | clean }}
+          </option>
+        {% endfor %}
       </select>
+      <small class="muted">Opcional</small>
     </label>
+
     <button type="submit">Guardar cambios</button>
   </form>
   {% endif %}

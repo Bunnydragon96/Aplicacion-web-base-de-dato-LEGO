@@ -199,11 +199,73 @@ def subconsulta():
                            sel_country=country, cols=cols, rows=rows)
 
 
+# ====================================================================== #
+#  Validación de formulario de set (RF-08 / RF-09)                       #
+#  Devuelve lista de mensajes de error; vacía = datos válidos.           #
+# ====================================================================== #
+def _validate_set_form(form, themes, ages, diffs):
+    errors = []
+
+    # 1. Nombre — obligatorio, máximo 300 caracteres
+    name = form.get("set_name", "").strip()
+    if not name:
+        errors.append("El nombre del set es obligatorio.")
+    elif len(name) > 300:
+        errors.append(f"El nombre no puede superar 300 caracteres (actual: {len(name)}).")
+
+    # 2. Cantidad de piezas — opcional; si se ingresa debe ser entero ≥ 1
+    piece_raw = form.get("piece_count", "").strip()
+    if piece_raw:
+        try:
+            piece_val = int(piece_raw)
+            if piece_val < 1:
+                errors.append("La cantidad de piezas debe ser un número positivo (mínimo 1).")
+        except ValueError:
+            errors.append("La cantidad de piezas debe ser un número entero (sin decimales).")
+
+    # 3. Tema — obligatorio; debe ser un ID existente en la tabla theme
+    valid_theme_ids = {str(t["theme_id"]) for t in themes}
+    theme_raw = form.get("theme_id", "").strip()
+    if not theme_raw:
+        errors.append("Debes seleccionar un tema.")
+    elif theme_raw not in valid_theme_ids:
+        errors.append("El tema seleccionado no existe en la base de datos.")
+
+    # 4. Rango de edad — obligatorio; debe ser un ID existente en age_range
+    valid_age_ids = {str(a["age_id"]) for a in ages}
+    age_raw = form.get("age_id", "").strip()
+    if not age_raw:
+        errors.append("Debes seleccionar un rango de edad.")
+    elif age_raw not in valid_age_ids:
+        errors.append("El rango de edad seleccionado no existe en la base de datos.")
+
+    # 5. Dificultad: opcional; si se selecciona debe ser un ID valido
+    diff_raw = form.get("difficulty_id", "").strip()
+    if diff_raw:
+        valid_diff_ids = {str(d["difficulty_id"]) for d in diffs}
+        diff_ok = diff_raw in valid_diff_ids
+        if not diff_ok:
+            errors.append("La dificultad seleccionada no existe en la base de datos.")
+
+    return errors
+
+
 # ---------- RF-08: insertar -------------------------------------------------
 @app.route("/insertar", methods=["GET", "POST"])
 @login_required
 def insertar():
+    themes = db.list_themes()
+    ages   = db.list_ages()
+    diffs  = db.list_difficulties()
+
     if request.method == "POST":
+        errors = _validate_set_form(request.form, themes, ages, diffs)
+        if errors:
+            for msg in errors:
+                flash(msg, "error")
+            # Re-render con los valores que el usuario ya escribió
+            return render_template("insertar.html", themes=themes, ages=ages,
+                                   diffs=diffs, form_data=request.form)
         try:
             new_id = db.insert_set(
                 request.form["set_name"].strip(),
@@ -212,40 +274,61 @@ def insertar():
                 request.form.get("age_id", type=int),
                 request.form.get("difficulty_id", type=int),
             )
-            flash(f"Set insertado con prod_id = {new_id}.", "ok")
+            flash(f"Set insertado correctamente con ID = {new_id}.", "ok")
             return redirect(url_for("modificar", prod_id=new_id))
         except Exception as e:
-            flash(f"Error al insertar: {e}", "error")
-    return render_template("insertar.html", themes=db.list_themes(),
-                           ages=db.list_ages(), diffs=db.list_difficulties())
+            flash(f"Error inesperado al insertar: {e}", "error")
+
+    return render_template("insertar.html", themes=themes, ages=ages,
+                           diffs=diffs, form_data=None)
 
 
 # ---------- RF-09: modificar ------------------------------------------------
 @app.route("/modificar", methods=["GET", "POST"])
 @login_required
 def modificar():
-    prod_id = request.values.get("prod_id", type=int)
-    results = None
+    themes = db.list_themes()
+    ages   = db.list_ages()
+    diffs  = db.list_difficulties()
+
+    prod_id  = request.values.get("prod_id", type=int)
+    results  = None
+    form_data = None  # datos enviados por el usuario (solo cuando hay errores)
+
     if request.method == "POST" and request.form.get("accion") == "guardar":
-        try:
-            db.update_set(
-                prod_id,
-                request.form["set_name"].strip(),
-                request.form.get("piece_count", type=int),
-                request.form.get("theme_id", type=int),
-                request.form.get("age_id", type=int),
-                request.form.get("difficulty_id", type=int),
-            )
-            flash("Cambios guardados.", "ok")
-        except Exception as e:
-            flash(f"Error al modificar: {e}", "error")
+        errors = _validate_set_form(request.form, themes, ages, diffs)
+
+        # Validación adicional: el set a editar debe existir
+        if prod_id is None:
+            errors.append("No se especificó un set para modificar.")
+        elif not db.get_set(prod_id):
+            errors.append(f"No existe ningún set con ID = {prod_id}.")
+
+        if errors:
+            for msg in errors:
+                flash(msg, "error")
+            form_data = request.form  # conservar ediciones del usuario
+        else:
+            try:
+                db.update_set(
+                    prod_id,
+                    request.form["set_name"].strip(),
+                    request.form.get("piece_count", type=int),
+                    request.form.get("theme_id", type=int),
+                    request.form.get("age_id", type=int),
+                    request.form.get("difficulty_id", type=int),
+                )
+                flash("Cambios guardados correctamente.", "ok")
+            except Exception as e:
+                flash(f"Error inesperado al modificar: {e}", "error")
+
     term = request.args.get("q", "")
     if term:
         results = db.search_sets(term)
     current = db.get_set(prod_id) if prod_id else None
-    return render_template("modificar.html", themes=db.list_themes(),
-                           ages=db.list_ages(), diffs=db.list_difficulties(),
-                           results=results, term=term, current=current)
+    return render_template("modificar.html", themes=themes, ages=ages,
+                           diffs=diffs, results=results, term=term,
+                           current=current, form_data=form_data)
 
 
 if __name__ == "__main__":

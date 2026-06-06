@@ -10,26 +10,63 @@
     dejarlos en blanco o sin especificar si no dispones del dato. Una vez insertado,
     serás redirigido a la página de edición para completar o corregir la información.
   </p>
-  <form method="post">
+  {# fd = valores previos cuando el servidor rechaza el formulario #}
+  {% set fd = form_data %}
+  <form method="post" novalidate>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <label>Nombre del set <input name="set_name" required></label>
-    <label>Cantidad de piezas <input name="piece_count" type="number" min="0"></label>
-    <label>Tema
+
+    <label>Nombre del set *
+      <input name="set_name" maxlength="300" required
+             value="{{ fd.set_name | clean if fd else '' }}"
+             placeholder="Ej. Millennium Falcon">
+      <small class="muted">Obligatorio · máximo 300 caracteres</small>
+    </label>
+
+    <label>Cantidad de piezas
+      <input name="piece_count" type="number" min="1"
+             value="{{ fd.piece_count if fd and fd.piece_count else '' }}"
+             placeholder="Ej. 1369">
+      <small class="muted">Opcional · número entero ≥ 1</small>
+    </label>
+
+    <label>Tema *
       <select name="theme_id" required>
-        {% for t in themes %}<option value="{{ t.theme_id }}">{{ t.theme_name | clean }}</option>{% endfor %}
+        {% for t in themes %}
+          <option value="{{ t.theme_id }}"
+            {{ 'selected' if fd and fd.theme_id == t.theme_id|string }}>
+            {{ t.theme_name | clean }}
+          </option>
+        {% endfor %}
       </select>
+      <small class="muted">Obligatorio</small>
     </label>
-    <label>Rango de edad
+
+    <label>Rango de edad *
       <select name="age_id" required>
-        {% for a in ages %}<option value="{{ a.age_id }}">{{ a.ages | clean }}</option>{% endfor %}
+        {% for a in ages %}
+          <option value="{{ a.age_id }}"
+            {{ 'selected' if fd and fd.age_id == a.age_id|string }}>
+            {{ a.ages | clean }}
+          </option>
+        {% endfor %}
       </select>
+      <small class="muted">Obligatorio</small>
     </label>
-    <label>Dificultad (opcional)
+
+    <label>Dificultad
       <select name="difficulty_id">
-        <option value="">— sin especificar —</option>
-        {% for d in diffs %}<option value="{{ d.difficulty_id }}">{{ d.review_difficulty | clean }}</option>{% endfor %}
+        <option value=""
+          {{ 'selected' if not fd or not fd.difficulty_id }}>— sin especificar —</option>
+        {% for d in diffs %}
+          <option value="{{ d.difficulty_id }}"
+            {{ 'selected' if fd and fd.difficulty_id == d.difficulty_id|string }}>
+            {{ d.review_difficulty | clean }}
+          </option>
+        {% endfor %}
       </select>
+      <small class="muted">Opcional</small>
     </label>
+
     <button type="submit">Insertar</button>
   </form>
 </div>
