@@ -24,11 +24,11 @@ LEGO_CSV(ages, list_price, num_reviews, piece_count, play_star_rating,
 |---|---|
 | `prod_id` | No es único entre filas; se repite por país |
 | `country` | 21 valores distintos (AT, AU, BE, CA, CH, CZ, DE, DN, ES, FI, FR, GB, IE, IT, LU, NL, NO, NZ, PL, PT, US) |
-| `list_price` | Único por par `(prod_id, country)` — el único valor que varía genuinamente por mercado |
+| `list_price` | El CSV contiene 1 391 filas duplicadas en el par `(prod_id, country)`; el ETL las deduplica. El par resultante es único: 10 870 combinaciones distintas. Es el único atributo que varía genuinamente por mercado. |
 | `ages` | 100 % constante por `prod_id` (0 variaciones en 744 sets) |
 | `set_name` | Constante por `prod_id` con ruido menor en 6 sets (variantes tipográficas) |
 | `piece_count` | Constante por `prod_id` con ruido menor en 2 sets |
-| `theme_name` | 41 valores distintos; varía para 19 sets (ruido de datos); se consolida con el valor más frecuente por `prod_id` |
+| `theme_name` | 41 valores brutos en el CSV, pero 3 filas tienen tema vacío `''` (ruido); el ETL descarta esas filas vía `dropna()`. **40 temas reales** se cargan en la base de datos. Varía para 19 sets (ruido); se consolida con el valor más frecuente por `prod_id`. |
 | `review_difficulty` | Varía para 8 sets (ruido); se consolida con el valor más frecuente |
 | `star_rating`, `play_star_rating`, `val_star_rating`, `num_reviews` | Varían para ~20 sets (ruido); se consolidan por `prod_id` |
 | `prod_desc`, `prod_long_desc` | Constantes por `prod_id` |
@@ -51,7 +51,7 @@ PK = {prod_id, country}
 **Tabla en 1NF:**
 ```
 R1(prod_id*, country*, ages, list_price, num_reviews, piece_count,
-   play_star_rating, prod_desc, prod_id, prod_long_desc, review_difficulty,
+   play_star_rating, prod_desc, prod_long_desc, review_difficulty,
    set_name, star_rating, theme_name, val_star_rating)
 ```
 
@@ -185,15 +185,16 @@ Todas las tablas satisfacen BCNF.
 
 ## 6. Especialización ISA sobre THEME (herencia)
 
-El análisis de los 41 temas del dataset permite clasificarlos en dos
+El análisis de los **40 temas reales** del dataset permite clasificarlos en dos
 categorías mutuamente excluyentes:
 
 - **LICENSED_THEME**: temas basados en propiedad intelectual externa (Star Wars, Marvel, Disney, Minecraft, etc.) — tienen un atributo adicional `licensor`.
 - **ORIGINAL_THEME**: temas propios de LEGO (City, Technic, Creator, Classic, etc.) — sin atributo adicional.
 
 Esta especialización es **total** (todo tema es Licensed u Original) y
-**disjunta** (ningún tema puede ser ambos a la vez), lo que justifica
-implementarla con el patrón de tabla por subclase:
+**disjunta** (ningún tema puede ser ambos a la vez), verificado en la base de
+datos: 18 temas LICENSED + 22 temas ORIGINAL = 40 total, con intersección vacía.
+Se implementa con el patrón de tabla por subclase:
 
 ```
 THEME(theme_id*, theme_name, theme_type ENUM('LICENSED','ORIGINAL'))
@@ -210,25 +211,29 @@ ORIGINAL_THEME(theme_id* FK→THEME)
 ## 7. Esquema final normalizado (resumen)
 
 El proceso completo desde la sábana CSV hasta el esquema 3NF/BCNF produce
-**9 relaciones**:
+**9 relaciones de datos** derivadas del CSV. La base de datos contiene además
+una décima tabla de aplicación (`app_user`) que no proviene del CSV sino de
+los requisitos funcionales de autenticación (RF-01, RF-02):
 
-| # | Tabla | Clave primaria | Proviene de |
-|---|---|---|---|
-| 1 | `age_range` | `age_id` | Eliminar transitiva: `prod_id → ages → {min_age, max_age}` |
-| 2 | `difficulty` | `difficulty_id` | Eliminar transitiva: `prod_id → review_difficulty` |
-| 3 | `theme` | `theme_id` | Eliminar transitiva: `prod_id → theme_name → theme_type` |
-| 4 | `licensed_theme` | `theme_id` (FK) | Especialización ISA de `theme` |
-| 5 | `original_theme` | `theme_id` (FK) | Especialización ISA de `theme` |
-| 6 | `lego_set` | `prod_id` | `SET_DATOS2` — tabla central del set |
-| 7 | `country` | `country_code` | Eliminar parcial: `country` en `SET_PAIS` |
-| 8 | `price_listing` | `{prod_id, country_code}` | `SET_PAIS` tras extraer `country` |
-| 9 | `review_summary` | `prod_id` (FK 1:1) | Separación de atributos de reseña |
+| # | Tabla | Clave primaria | Proviene de | Filas en DB |
+|---|---|---|---|---|
+| 1 | `age_range` | `age_id` | Eliminar transitiva: `prod_id → ages → {min_age, max_age}` | 31 |
+| 2 | `difficulty` | `difficulty_id` | Eliminar transitiva: `prod_id → review_difficulty` | 5 |
+| 3 | `theme` | `theme_id` | Eliminar transitiva: `prod_id → theme_name → theme_type` | 40 |
+| 4 | `licensed_theme` | `theme_id` (FK) | Especialización ISA de `theme` | 18 |
+| 5 | `original_theme` | `theme_id` (FK) | Especialización ISA de `theme` | 22 |
+| 6 | `lego_set` | `prod_id` | `SET_DATOS2` — tabla central del set | 744 |
+| 7 | `country` | `country_code` | Eliminar parcial: `country` en `SET_PAIS` | 21 |
+| 8 | `price_listing` | `{prod_id, country_code}` | `SET_PAIS` tras extraer `country` | 10 868 |
+| 9 | `review_summary` | `prod_id` (FK 1:1) | Separación de atributos de reseña | 744 |
+| — | `app_user` | `user_id` | Requisito RF-01/RF-02 (autenticación) — no del CSV | variable |
 
-**Reducción de redundancia:** la sábana original tenía 12 261 filas con los
-datos del set repetidos 21 veces por set (una por país). El esquema
-normalizado almacena cada dato exactamente una vez: 744 filas en `lego_set`,
-21 filas en `country`, y 12 261 filas solo en `price_listing` (donde la
-variación por país es legítima).
+**Reducción de redundancia:** la sábana original tenía 12 261 filas (de las cuales
+1 391 son duplicados del par `(prod_id, country)`) con los datos del set repetidos
+por cada mercado. Tras deduplicación y filtrado de 2 sets con tema vacío, el ETL
+carga **10 868 filas en `price_listing`** (la única tabla donde la variación por
+país es legítima). El resto de datos se almacena sin redundancia: 744 filas en
+`lego_set`, 40 en `theme`, 21 en `country`, etc.
 
 ### Esquema relacional en notación estándar
 
@@ -244,6 +249,9 @@ country(country_code, country_name)
 price_listing(prod_id → lego_set, country_code → country, list_price)
 review_summary(prod_id → lego_set, num_reviews, star_rating,
                play_star_rating, val_star_rating)
+
+-- Tabla de aplicación (RF-01/RF-02); no derivada del CSV:
+app_user(user_id, username, password_hash)
 ```
 
-*(atributos subrayados = clave primaria; `→ tabla` = clave foránea)*
+*(PK en negrita o primera posición; `→ tabla` = clave foránea)*
