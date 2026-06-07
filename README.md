@@ -15,4 +15,4 @@ Finalmente, la verificación será la evaluación.
 
 Enlace de base de datos en Kaggle: https://www.kaggle.com/datasets/mterzolo/lego-sets
 
-El video final se puede encontrar en YouTube por el enlace: https://youtu.be/hCDcrKg1pyY 
+
