@@ -185,12 +185,18 @@ def sets_above_avg_price(country_code="US", limit=100):
 #  RF-08 / RF-09  ── Insertar y modificar datos                          #
 # ====================================================================== #
 def insert_set(set_name, piece_count, theme_id, age_id, difficulty_id):
-    return execute(
-        """INSERT INTO lego_set(set_name, piece_count, theme_id, age_id, difficulty_id)
-           VALUES (%s, %s, %s, %s, %s)""",
-        (set_name, piece_count, theme_id, age_id,
+    # prod_id no tiene AUTO_INCREMENT en el esquema (los IDs vienen del CSV).
+    # Se genera el siguiente ID disponible como MAX(prod_id) + 1.
+    _, rows = q("SELECT COALESCE(MAX(prod_id), 0) + 1 AS next_id FROM lego_set")
+    next_id = rows[0]["next_id"]
+
+    execute(
+        """INSERT INTO lego_set(prod_id, set_name, piece_count, theme_id, age_id, difficulty_id)
+           VALUES (%s, %s, %s, %s, %s, %s)""",
+        (next_id, set_name, piece_count, theme_id, age_id,
          difficulty_id if difficulty_id else None),
     )
+    return next_id
 
 
 def get_set(prod_id):
